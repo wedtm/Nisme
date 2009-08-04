@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using System.Xml.XPath;
 using System.Data;
+using Microsoft.Windows.Controls;
 
 namespace Lala.API
 {
