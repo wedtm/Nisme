@@ -19,9 +19,46 @@ namespace Nisme.Controls
     /// </summary>
     public partial class MenuBar : UserControl
     {
+        public MainWindow parent;
+        public Boolean IsFullscreen = false;
         public MenuBar()
         {
             InitializeComponent();
+        }
+
+        private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (IsFullscreen)
+            {
+                parent.WindowState = WindowState.Normal;
+                parent.WindowStyle = WindowStyle.SingleBorderWindow;
+                IsFullscreen = false;
+            }
+            else
+            {
+                parent.WindowStyle = WindowStyle.None;
+                parent.WindowState = WindowState.Maximized;
+                IsFullscreen = true;
+            }
+        }
+
+        private void Border_MouseEnter(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void Canvas_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Canvas me = (Canvas)sender;
+            foreach (UIElement el in me.Children)
+            {
+                Path p = (Path)el;
+                p.Fill = Brushes.White;
+            }
+        }
+
+        private void Canvas_MouseLeave(object sender, MouseEventArgs e)
+        {
+
         }
     }
 }
