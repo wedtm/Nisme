@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Threading;
 using System.Windows.Threading;
 using System.Net;
@@ -52,6 +48,7 @@ namespace Nisme
             nowPlaying.parent = this;
             LoadLibrary();
             progressTimer = new DispatcherTimer();
+            progressTimer.Interval = new TimeSpan(1000); // This equals to 1 second, some tweaking may be necessary. //- WedTM
             progressTimer.Tick += new EventHandler(progressTimer_Tick);
             progressTimer.Start();
             
@@ -93,6 +90,7 @@ namespace Nisme
             }
             if (Bass.BASS_ChannelIsActive(MainChannel) != BASSActive.BASS_ACTIVE_STOPPED)
             {
+                progressTimer.IsEnabled = true; // Adding this in in case the else statement is hit before BASS actually starts playing, thusly causing the timer to be disabled //- WedTM
                 if (nowPlaying.Visibility == Visibility.Collapsed)
                     nowPlaying.Visibility = Visibility.Visible;
                 double max = Bass.BASS_StreamGetFilePosition(MainChannel, BASSStreamFilePosition.BASS_FILEPOS_END);
@@ -114,7 +112,7 @@ namespace Nisme
                 if (UserLibrary.Playing.HasMoreSongs)
                     PlaySong(UserLibrary.Playing.GetNext(CurrentTrack).PlayLink);
                 else
-                    progressTimer.IsEnabled = false;
+                    progressTimer.IsEnabled = false; // Doesn't appear to be needed, this one is for the release team! //- WedTM
 
             }
         }
@@ -139,6 +137,7 @@ namespace Nisme
 
         protected void PlaySong(string PlayURL)
         {
+            progressTimer.IsEnabled = true;
             Bass.BASS_ChannelStop(MainChannel);
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(PlayURL);
             req.Headers.Add("Cookie:" + Lala.API.Constants.Cookie);
@@ -230,7 +229,7 @@ namespace Nisme
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             List<Lala.API.Song> newList = UserLibrary.Playing.Songs.FindAll(LikeTrack);
-            dataGrid1.DataContext = newList;
+            dataGrid1.ItemsSource = newList;
         }
 
         private bool LikeTrack(Song s)
@@ -247,7 +246,7 @@ namespace Nisme
 
         private void dataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-                        progressTimer.IsEnabled = true;
+            progressTimer.IsEnabled = true;
             Song selected = (Song)dataGrid1.SelectedItem;
             UserLibrary.Playing.CurrentSong = selected;
             PlaySong(selected.PlayLink);
