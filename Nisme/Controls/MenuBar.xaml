@@ -21,6 +21,21 @@
         <Border Grid.Column="0" BorderBrush="#333333" BorderThickness="0,0,1,0">
         </Border>
         <Border Grid.Column="1" BorderBrush="#333333" BorderThickness="0,0,1,0">
+            <Grid>
+                <Ellipse
+      Height="20"
+      Width="20"
+      StrokeThickness="2"
+      Stroke="#b9cccc">
+                <Ellipse.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#333333" Offset="0.0" />
+                        <GradientStop Color="#646464" Offset="1.0"  />
+                    </LinearGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+                <Path Fill="#b9cccc" Data="M 14,11 l 1.5,0 l 0,6 l 4,4 l -1.5,1.5 l -4,-4 Z" />
+            </Grid>
         </Border>
         <Border Grid.Column="2" BorderBrush="#333333" BorderThickness="0,0,1,0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
