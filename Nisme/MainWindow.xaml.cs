@@ -22,6 +22,7 @@ namespace Nisme
     public partial class MainWindow : Window
     {
         Lala.API.Library UserLibrary;
+        Lala.API.User User;
         Thread PlayerThread;
         int MainChannel;
         Song CurrentTrack;
@@ -110,8 +111,10 @@ namespace Nisme
             {
                 if (nowPlaying.Visibility == Visibility.Visible)
                     nowPlaying.Visibility = Visibility.Collapsed;
-                if (UserLibrary.Playing.HasMoreSongs)
-                    PlaySong(UserLibrary.Playing.GetNext(CurrentTrack).PlayLink);
+                if (User.Queue.Count > 0)
+                {
+                    PlayNext();
+                }
                 else
                     progressTimer.IsEnabled = false; // Doesn't appear to be needed, this one is for the release team! //- WedTM
 
@@ -120,7 +123,8 @@ namespace Nisme
 
         private void LoadLibrary()
         {
-            UserLibrary = Functions.OpenLibrary(Lala.API.Functions.SetTrackCount() , false);
+            User = Functions.OpenLibrary(Lala.API.Functions.SetTrackCount() , false);
+            UserLibrary = User.Library;
             UserLibrary.Playing = UserLibrary.Playlists[0];
             dataGrid1.DataContext = UserLibrary.Playing.Songs;
             dataGrid1.ItemsSource = from song in UserLibrary.Playing.Songs select song;
@@ -207,6 +211,15 @@ namespace Nisme
 
         private void listBox1_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            User.Queue.Clear();
+            Song selected = (Song)dataGrid1.SelectedItem;
+            int StartIndex = dataGrid1.Items.IndexOf(selected);
+            User.Queue.Add(selected);
+            for (int i = 1; i < 50; i++)
+            {
+                if((i + StartIndex) <= (dataGrid1.Items.Count - StartIndex) - 1)
+                User.Queue.Add((Song)dataGrid1.Items[i + StartIndex]);
+            }
             PlayNext();
         }
 
@@ -282,13 +295,37 @@ namespace Nisme
 
         public void PlayNext()
         {
-            Song selected = (Song)dataGrid1.SelectedItem;
-            // dataGrid1.Items.SortDescriptions;
+            Song selected = (Song)User.Queue[0];
+            RemoveSongFromQueue(0);
             UserLibrary.Playing.CurrentSong = selected;
             PlaySong(selected.PlayLink);
             nowPlaying.Artist.Text = selected.Artist;
             nowPlaying.Song.Text = selected.Title;
             nowPlaying.AlbumImage.Source = new BitmapImage(new Uri(selected.AlbumImage));
+        }
+
+        private void dataGrid1_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Add the currently selected track to the Q and update the nowPlaying bar to reflect the number of items in the Q.
+            if (e.Key == Key.Q)
+            {
+                Song sng = (Song)dataGrid1.SelectedItem;
+                AddSongToQueue(sng);
+            }
+        }
+
+        public void AddSongToQueue(Song sng)
+        {
+                User.Queue.Add(sng);
+                nowPlaying.QueueLength.Text = User.Queue.Count.ToString();
+                if (Bass.BASS_ChannelIsActive(MainChannel) == BASSActive.BASS_ACTIVE_STOPPED)
+                    PlayNext();
+        }
+
+        public void RemoveSongFromQueue(int Index)
+        {
+            User.Queue.RemoveAt(0);
+            nowPlaying.QueueLength.Text = User.Queue.Count.ToString();
         }
     }
 }

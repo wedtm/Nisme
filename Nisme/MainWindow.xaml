@@ -54,6 +54,8 @@
                          VerticalGridLinesBrush="#c9c9c9"
                      IsTextSearchEnabled="True"
                          CanUserAddRows="False"
+                         CanUserResizeRows="False"
+                         KeyDown="dataGrid1_KeyDown"
                      CellStyle="{StaticResource defaultCellStyle}" Sorting="dataGrid1_Sorting">
                     <tk:DataGrid.Columns>
                         <tk:DataGridTextColumn Header="Title"  MinWidth="300" Width="*"  

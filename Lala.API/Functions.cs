@@ -21,7 +21,7 @@ namespace Lala.API
         /// Saves the library in the users Document directory as LalaUserID.nlf
         /// </summary>
         /// <param name="library">Library Object to save</param>
-        public static void SaveLibrary(API.Library library)
+        public static void SaveLibrary(API.User library)
         {
             FileStream fs = new FileStream
                            ( GetMyDocumentsDir() + "\\" + API.Constants.UserID + ".nlf", FileMode.OpenOrCreate, FileAccess.Write);
@@ -37,27 +37,29 @@ namespace Lala.API
             }
         }
 
-        public static Library OpenLibrary(ulong tracks, bool force)
+        public static User OpenLibrary(ulong tracks, bool force)
         {
             string filename = GetMyDocumentsDir() + "\\" + API.Constants.UserID + ".nlf";
             if (File.Exists(filename) && force == false)
             {
                 FileStream fs = new FileStream(filename, FileMode.Open);
                 BinaryFormatter bf = new BinaryFormatter();
-                API.Library myLibrary = (API.Library)bf.Deserialize(fs);
+                API.User myLibrary = (API.User)bf.Deserialize(fs);
                 fs.Close();
                 return myLibrary;
             }
             else
             {
-                Library myLibrary = new Library();//new API.Library(API.HTTPRequests.GetLibrary(tracks, 0));
-                myLibrary.Playlists.Add(new Playlist(API.HTTPRequests.GetLibrary(tracks, 0), "My Collection", "songs"));
+                User myLibrary = new User();//new API.Library(API.HTTPRequests.GetLibrary(tracks, 0));
+                myLibrary.Library.Playlists.Add(new Playlist(API.HTTPRequests.GetLibrary(tracks, 0), "My Collection", "songs"));
                 Hashtable pls = HTTPRequests.GetPlaylists();
+                myLibrary.UserID = Functions.LalaUserId();
+                myLibrary.EmailAddress = API.Constants.UserID;
                 IDictionaryEnumerator en = pls.GetEnumerator();
                 while (en.MoveNext())
                 {
                     string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=" + en.Key.ToString() + "&includeHistos=false&count=50&skip=0&sortKey=Offset&sortDir=Asc&webSrc=nisme&xml=true";
-                    myLibrary.Playlists.Add(new Playlist(URL, en.Value.ToString(), en.Key.ToString()));
+                    myLibrary.Library.Playlists.Add(new Playlist(URL, en.Value.ToString(), en.Key.ToString()));
                 }
                 SaveLibrary(myLibrary);
                 return myLibrary;

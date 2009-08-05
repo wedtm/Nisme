@@ -162,7 +162,7 @@
                 <Border CornerRadius="5" BorderBrush="#276ea1" Grid.Row="1" Grid.Column="6"  MinHeight="50" VerticalAlignment="Top" BorderThickness="1">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                         <TextBlock FontFamily="Verdana" HorizontalAlignment="Center" FontSize="11" Foreground="#FFF">Queue:</TextBlock>
-                        <TextBlock FontFamily="Verdana" HorizontalAlignment="Center" FontSize="11" Foreground="#FFF">0</TextBlock>
+                        <TextBlock FontFamily="Verdana" HorizontalAlignment="Center" FontSize="11" Foreground="#FFF" x:Name="QueueLength">0</TextBlock>
                     </StackPanel>
                 </Border>
                 <Canvas Height="5" Width="5" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Left" Margin="5,0,0,0">

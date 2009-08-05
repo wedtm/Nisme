@@ -40,29 +40,10 @@
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" BorderBrush="#333333" BorderThickness="0,0,1,0">
         </Border>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <Border Grid.Column="1" BorderBrush="#333333" BorderThickness="0,0,1,0" MouseEnter="Border_MouseEnter">
-            <Canvas>
+            <Canvas MouseLeftButtonUp="Canvas_MouseLeftButtonUp">
                 <Path Fill="#b9cccc" Data="M 10,10 l -5,0 l 0,5 M 15,25 l 5,0 l 0,-5 M 20,10 l -5,0 l 5,5 M 15,25 l 5,0 l 0,-5 M 5,25 l 5,0 l -5,-5 M 15,25 l 5,0 l 0,-5" />
             </Canvas>
-
         </Border>
         <Border Grid.Column="2" BorderBrush="#333333" BorderThickness="0,0,1,0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
