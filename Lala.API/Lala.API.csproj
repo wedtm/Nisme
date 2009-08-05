@@ -89,7 +89,6 @@
     <Compile Include="Data Objects\Playlist.cs" />
     <Compile Include="Data Objects\User.cs" />
     <Compile Include="Functions.cs" />
-    <Compile Include="GlobalHook.cs" />
     <Compile Include="HTTPRequests.cs" />
     <Compile Include="Images.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

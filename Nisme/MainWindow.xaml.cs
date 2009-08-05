@@ -46,6 +46,7 @@ namespace Nisme
             nowPlaying.Artist.Text = String.Empty;
             nowPlaying.Song.Text = String.Empty;
             nowPlaying.parent = this;
+            menuBar.parent = this;
             LoadLibrary();
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = new TimeSpan(1000); // This equals to 1 second, some tweaking may be necessary. //- WedTM

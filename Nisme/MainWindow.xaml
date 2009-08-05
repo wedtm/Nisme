@@ -36,7 +36,7 @@
                     </Grid.Children>
                 </Grid>
                 <Controls:NowPlayingBar DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="Auto" Height="110" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" x:Name="nowPlaying" Visibility="Collapsed"/>
-            <Controls:MenuBar DockPanel.Dock="Top" HorizontalAlignment="Stretch" Width="Auto" />
+            <Controls:MenuBar DockPanel.Dock="Top" HorizontalAlignment="Stretch" Width="Auto" x:Name="menuBar" />
             <tk:DataGrid AutoGenerateColumns="False" x:Name="dataGrid1" 
                      VerticalAlignment="Stretch" 
                      HorizontalAlignment="Stretch" 
