@@ -53,8 +53,8 @@ namespace Nisme
             progressTimer.Interval = new TimeSpan(1000); // This equals to 1 second, some tweaking may be necessary. //- WedTM
             progressTimer.Tick += new EventHandler(progressTimer_Tick);
             progressTimer.Start();
-            
         }
+
 
         void progressOfTrack_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -111,7 +111,7 @@ namespace Nisme
             {
                 if (nowPlaying.Visibility == Visibility.Visible)
                     nowPlaying.Visibility = Visibility.Collapsed;
-                if (User.Queue.Count > 0)
+                if (Lala.API.Instance.CurrentUser.Queue.Count > 0)
                 {
                     PlayNext();
                 }
@@ -123,11 +123,10 @@ namespace Nisme
 
         private void LoadLibrary()
         {
-            User = Functions.OpenLibrary(Lala.API.Functions.SetTrackCount() , false);
-            UserLibrary = User.Library;
-            UserLibrary.Playing = UserLibrary.Playlists[0];
-            dataGrid1.DataContext = UserLibrary.Playing.Songs;
-            dataGrid1.ItemsSource = from song in UserLibrary.Playing.Songs select song;
+            Lala.API.Functions.LoadUser(false); // Loads the current user and populates Lala.API.Instance.CurrentUser with their data.
+            Lala.API.Instance.CurrentUser.Library.Playing = Lala.API.Instance.CurrentUser.Library.Playlists[0];
+            //dataGrid1.DataContext = UserLibrary.Playing.Songs;
+            dataGrid1.ItemsSource = from song in Lala.API.Instance.CurrentUser.Library.Playing.Songs select song;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -145,7 +144,7 @@ namespace Nisme
             progressTimer.IsEnabled = true;
             Bass.BASS_ChannelStop(MainChannel);
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(PlayURL);
-            req.Headers.Add("Cookie:" + Lala.API.Constants.Cookie);
+            req.Headers.Add("Cookie:" + Lala.API.Instance.Cookie);
             HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 _fs = resp.GetResponseStream();
                 _fsLength = resp.ContentLength;
@@ -295,16 +294,25 @@ namespace Nisme
 
         public void PlayNext()
         {
-            Song selected = (Song)User.Queue[0];
+            Song selected = (Song)Lala.API.Instance.CurrentUser.Queue[0];
             RemoveSongFromQueue(0);
-            UserLibrary.Playing.CurrentSong = selected;
+            Lala.API.Instance.CurrentUser.Library.Playing.CurrentSong = selected;
             PlaySong(selected.PlayLink);
             nowPlaying.Artist.Text = selected.Artist;
             nowPlaying.Song.Text = selected.Title;
+            SetLCDScreen(selected.Title, "by " + selected.Artist);
             nowPlaying.AlbumImage.Source = new BitmapImage(new Uri(selected.AlbumImage));
         }
 
-        private void dataGrid1_KeyDown(object sender, KeyEventArgs e)
+        public void SetLCDScreen(string Row1, string Row2)
+        {
+            if (Row1.Length > 20)
+                Row1 = Row1.Substring(0, 17) + "...";
+            if (Row2.Length > 20)
+                Row2 = Row2.Substring(0, 17) + "...";
+        }
+
+        private void dataGrid1_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             //Add the currently selected track to the Q and update the nowPlaying bar to reflect the number of items in the Q.
             if (e.Key == Key.Q)
@@ -316,16 +324,16 @@ namespace Nisme
 
         public void AddSongToQueue(Song sng)
         {
-                User.Queue.Add(sng);
-                nowPlaying.QueueLength.Text = User.Queue.Count.ToString();
+            Lala.API.Instance.CurrentUser.Queue.Add(sng);
+            nowPlaying.QueueLength.Text = Lala.API.Instance.CurrentUser.Queue.Count.ToString();
                 if (Bass.BASS_ChannelIsActive(MainChannel) == BASSActive.BASS_ACTIVE_STOPPED)
                     PlayNext();
         }
 
         public void RemoveSongFromQueue(int Index)
         {
-            User.Queue.RemoveAt(0);
-            nowPlaying.QueueLength.Text = User.Queue.Count.ToString();
+            Lala.API.Instance.CurrentUser.Queue.RemoveAt(0);
+            nowPlaying.QueueLength.Text = Lala.API.Instance.CurrentUser.Queue.Count.ToString();
         }
     }
 }

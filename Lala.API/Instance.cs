@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Lala.API
 {
-    public static class Constants
+    public static class Instance
     {
-        public static String UserID { get; set; }
         internal static String pCookie;
         public static String Cookie
         {
@@ -20,8 +19,6 @@ namespace Lala.API
                 pCookie = value;
             }
         }
-        public const double PREV_TRACK_RESET_DELAY = 2; // 2 seconds in, and it restarts the current track
-        public static long TRACK_COUNT { get; set; }
-        public const string VERSION = "0.5b";
+        public static User CurrentUser { get; set; }
     }
 }

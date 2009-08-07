@@ -9,16 +9,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Nisme
+namespace Nisme.Controls
 {
     /// <summary>
-    /// Interaction logic for NewUser.xaml
+    /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class NewUser : Window
+    public partial class TitleBar : UserControl
     {
-        public NewUser()
+        public TitleBar()
         {
             InitializeComponent();
         }

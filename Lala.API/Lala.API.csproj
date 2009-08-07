@@ -82,18 +82,17 @@
   <ItemGroup>
     <Compile Include="Data Objects\Album.cs" />
     <Compile Include="Data Objects\Artist.cs" />
-    <Compile Include="Constants.cs" />
+    <Compile Include="Info.cs" />
     <Compile Include="Data Objects\DataObject.cs" />
     <Compile Include="Data Objects\Histo.cs" />
+    <Compile Include="Instance.cs" />
     <Compile Include="Data Objects\Library.cs" />
     <Compile Include="Data Objects\Playlist.cs" />
     <Compile Include="Data Objects\User.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="HTTPRequests.cs" />
-    <Compile Include="Images.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data Objects\Song.cs" />
-    <Compile Include="UrlBuilder.cs" />
     <Compile Include="XmlParser.cs" />
     <Compile Include="XPathStatements.cs" />
   </ItemGroup>

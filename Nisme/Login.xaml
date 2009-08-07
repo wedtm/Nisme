@@ -1,51 +1,12 @@
 ﻿<Window x:Class="Nisme.Login"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Nisme="clr-namespace:Nisme"
     Title="Login" Height="530.159" Width="642" AllowsTransparency="False" WindowStyle="SingleBorderWindow">
     <Window.Resources>
-        <DataTemplate x:Key="UsersNormalTemplate" DataType="{x:Type Nisme:User}">
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <Border BorderBrush="Black" CornerRadius="4" BorderThickness="0">
-                    <Image Width="90" Height="90" Margin="5,0,0,0 " Source="{Binding Path=ProfileImage}"></Image>
-                </Border>
-                <StackPanel Orientation="Vertical" Margin="20">
-                    <TextBlock FontSize="24" FontWeight="3" Text="{Binding Path=Username}"/>
-                                    <TextBlock FontSize="18" Text="{Binding Path=LastLoginDate}"/>
-                                </StackPanel>
-            </StackPanel>
-        </DataTemplate>
-        <DataTemplate x:Key="UsersSelectedTemplate" DataType="{x:Type Nisme:User}">
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <Border BorderBrush="Black" CornerRadius="4" BorderThickness="0">
-                    <Image Width="90" Height="90" Margin="5,0,0,0 " Source="{Binding Path=ProfileImage}"></Image>
-                </Border>
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Orientation="Vertical" Margin="20">
-                        <TextBlock FontSize="24" FontWeight="3" Text="{Binding Path=Username}"/>
-                        <StackPanel Orientation="Horizontal">
-                        <PasswordBox x:Name="password" Width="150" Height="32" FontSize="28" PasswordChanged="password_PasswordChanged"></PasswordBox>
-                        <Button Click="Button_Click" Margin="2" Height="32" FontSize="18" Padding="2">Login</Button>
-                            </StackPanel>
-                   </StackPanel>
-                </StackPanel>
-            </StackPanel>
-        </DataTemplate>
-        <Style TargetType="{x:Type ListBoxItem}" x:Key="ContainerStyle">
-            <Setter Property="ContentTemplate" Value="{StaticResource UsersNormalTemplate}" />
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="ContentTemplate" Value="{StaticResource UsersSelectedTemplate}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
     </Window.Resources>
     <Grid>
         <Image Margin="89,8,71,0" Name="startupImage" Stretch="Fill" Source="startupImage.png" Height="114" VerticalAlignment="Top" />
         <TabControl Background="Transparent" Margin="89,107.175,71,41.441" Name="tabControl1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
-            <TabItem Header="Existing Users" Background="Transparent">
-                <ListBox BorderThickness="0" DockPanel.Dock="Top" Name="listBox1" Background="Transparent" ItemContainerStyle="{StaticResource ContainerStyle}" ItemsSource="{Binding Users}" />
-            </TabItem>
             <TabItem Header="New User" Background="Transparent">
                 <Grid Margin="30">
                     <Grid.ColumnDefinitions>
