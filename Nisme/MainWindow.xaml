@@ -27,7 +27,7 @@
                         <ColumnDefinition Width="100" />
                     </Grid.ColumnDefinitions>
                     <Grid.Children>
-                        <Menu Height="22" Name="menu1" Margin="0,0,0,5" DockPanel.Dock="Left" Width="Auto" Visibility="Visible" MouseEnter="menu1_MouseEnter" MouseLeave="menu1_MouseLeave">
+                        <Menu Height="22" Name="menu1" Margin="0,0,0,5" DockPanel.Dock="Left" Width="Auto" Visibility="Visible">
                             <MenuItem Header="File">
                                 <MenuItem Header="Exit" Background="Transparent" x:Name="ExitMenuItem" Click="ExitMenuItem_Click"></MenuItem>
                             </MenuItem>
@@ -44,7 +44,6 @@
                      AlternatingRowBackground="#f7f7f7"
                              RowBackground="#FFFFFF"
                      BorderBrush="Gray"
-                     MouseDoubleClick="listBox1_MouseDoubleClick"
                      BorderThickness="0,0,0,1"
                      GridLinesVisibility="All"
                      SelectionUnit="FullRow"

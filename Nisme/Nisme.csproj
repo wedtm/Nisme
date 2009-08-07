@@ -150,6 +150,10 @@
       <Project>{EBF8F193-8C2A-4218-8F7F-5B90AA54073C}</Project>
       <Name>Lala.API</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Player\Player.csproj">
+      <Project>{BF3B1964-5240-447E-B32A-85EF13336F0F}</Project>
+      <Name>Player</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.WinFX.targets" />
