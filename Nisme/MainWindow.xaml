@@ -5,7 +5,7 @@
     xmlns:Controls="clr-namespace:Nisme.Controls"
     Closing="Window_Closing"
    
-    Title="Nisme - BETA - v2"  Height="452" Width="1002" Loaded="Window_Loaded" Opacity="1" SizeChanged="Window_SizeChanged">
+    Title="Nisme - BETA - v2"  Height="452" Width="1002" Loaded="Window_Loaded" Opacity="1">
     <Window.Resources>
         <Style x:Key="defaultCellStyle" TargetType="{x:Type tk:DataGridCell}">
             <Style.Triggers>
@@ -56,7 +56,7 @@
                          CanUserAddRows="False"
                          CanUserResizeRows="False"
                          KeyDown="dataGrid1_KeyDown"
-                     CellStyle="{StaticResource defaultCellStyle}" Sorting="dataGrid1_Sorting">
+                     CellStyle="{StaticResource defaultCellStyle}">
                     <tk:DataGrid.Columns>
                         <tk:DataGridTextColumn Header="Title"  MinWidth="300" Width="*"  
                                            Binding="{Binding Title}" 

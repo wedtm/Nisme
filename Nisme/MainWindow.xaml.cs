@@ -268,29 +268,6 @@ namespace Nisme
             nowPlaying.AlbumImage.Source = new BitmapImage(new Uri(selected.AlbumImage));
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Window_Closing(sender, null);
-        }
-
-        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount == 2)
-            {
-
-            }
-            this.DragMove();
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-
-        }
-
-        private void dataGrid1_Sorting(object sender, Microsoft.Windows.Controls.DataGridSortingEventArgs e)
-        {
-            
-        }
 
         public void PlayNext()
         {
