@@ -68,7 +68,6 @@ namespace Nisme
             {
                 nowPlaying.Visibility = Visibility.Collapsed;
             }));
-            progressTimer.Stop();
         }
 
         void player_Played(object sender, EventArgs e)
@@ -157,10 +156,18 @@ namespace Nisme
         {
             progressTimer.IsEnabled = true;
             Song selected = (Song)dataGrid1.SelectedItem;
+            UpdateMetaData();
             player.Play(selected);
-            nowPlaying.Artist.Text = selected.Artist;
-            nowPlaying.Song.Text = selected.Title;
-            nowPlaying.AlbumImage.Source = new BitmapImage(new Uri(selected.AlbumImage));
+        }
+
+        private void UpdateMetaData()
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                {
+                    nowPlaying.Artist.Text = Lala.API.Instance.CurrentUser.Library.Playing.CurrentSong.Artist;
+                    nowPlaying.Song.Text = Lala.API.Instance.CurrentUser.Library.Playing.CurrentSong.Title;
+                    nowPlaying.AlbumImage.Source = new BitmapImage(new Uri(Lala.API.Instance.CurrentUser.Library.Playing.CurrentSong.AlbumImage));
+                }));
         }
 
 
@@ -169,9 +176,7 @@ namespace Nisme
             Song selected = (Song)Lala.API.Instance.CurrentUser.Queue[0];
             player.RemoveSongFromQueue(0);
             Lala.API.Instance.CurrentUser.Library.Playing.CurrentSong = selected;
-            nowPlaying.Artist.Text = selected.Artist;
-            nowPlaying.Song.Text = selected.Title;
-            nowPlaying.AlbumImage.Source = new BitmapImage(new Uri(selected.AlbumImage));
+            UpdateMetaData();
             player.Play(selected);
         }
 
