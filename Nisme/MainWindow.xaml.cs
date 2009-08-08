@@ -42,6 +42,7 @@ namespace Nisme
             nowPlaying.Song.Text = String.Empty;
             nowPlaying.parent = this;
             menuBar.parent = this;
+            playList.parent = this;
             player = new Vimae.Player();
             player.Played += new EventHandler(player_Played);
             player.Stopped += new EventHandler(player_Stopped);
@@ -119,7 +120,8 @@ namespace Nisme
             Lala.API.Functions.LoadUser(false); // Loads the current user and populates Lala.API.Instance.CurrentUser with their data.
             Lala.API.Instance.CurrentUser.Library.Playing = Lala.API.Instance.CurrentUser.Library.Playlists[0];
             //dataGrid1.DataContext = UserLibrary.Playing.Songs;
-            dataGrid1.ItemsSource = from song in Lala.API.Instance.CurrentUser.Library.Playing.Songs select song;
+            dataGrid1.ItemsSource = Lala.API.Instance.CurrentUser.Library.Playing.Songs;
+            playList.PlaylistsContainer.ItemsSource = Lala.API.Instance.CurrentUser.Library.Playlists;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

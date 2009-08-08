@@ -80,6 +80,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Playlists.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -103,6 +107,9 @@
     </Compile>
     <Compile Include="Controls\NowPlayingBar.xaml.cs">
       <DependentUpon>NowPlayingBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Playlists.xaml.cs">
+      <DependentUpon>Playlists.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlassHelper.cs" />
     <Compile Include="Login.xaml.cs">

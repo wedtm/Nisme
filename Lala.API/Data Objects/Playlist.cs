@@ -12,6 +12,10 @@ namespace Lala.API
     [Serializable]
     public class Playlist : CollectionBase
     {
+        public override string ToString()
+        {
+            return Name;
+        }
         public String Name { get; set; }
         public String ID { get; set; }
         public Song Playing { get; set; }
@@ -132,6 +136,5 @@ namespace Lala.API
                 Songs[index] = value;
             }
         }
-
-    }
+   }
 }

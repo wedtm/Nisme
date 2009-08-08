@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="Nisme.Controls.Playlists"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:LalaAPI ="clr-namespace:Lala.API;assembly=Lala.API"
+    Height="Auto" Width="Auto" MinHeight="200" MinWidth="100">
+    <UserControl.Resources>
+        <DataTemplate x:Key="PlaylistTemplate" DataType="{x:Type LalaAPI:Playlist}">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock FontSize="24" FontWeight="3" Text="{Binding Path=Name}"/>
+                    <TextBlock FontSize="18" Text="{Binding Path=Songs.Count}"/>
+                </StackPanel>
+        </DataTemplate>
+        <Style TargetType="{x:Type ListBoxItem}" x:Key="ContainerStyle">
+            <Setter Property="ContentTemplate" Value="{StaticResource PlaylistTemplate}" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <ListBox x:Name="PlaylistsContainer" ItemContainerStyle="{StaticResource ContainerStyle}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MouseDoubleClick="PlaylistsContainer_MouseDoubleClick" />            
+    </Grid>
+</UserControl>

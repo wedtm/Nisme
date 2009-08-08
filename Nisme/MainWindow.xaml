@@ -37,7 +37,21 @@
                 </Grid>
                 <Controls:NowPlayingBar DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="Auto" Height="110" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" x:Name="nowPlaying" Visibility="Collapsed"/>
             <Controls:MenuBar DockPanel.Dock="Top" HorizontalAlignment="Stretch" Width="Auto" x:Name="menuBar" />
-            <tk:DataGrid AutoGenerateColumns="False" x:Name="dataGrid1" 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Controls:Playlists Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="playList"/>
+            <GridSplitter Grid.Column="1"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Stretch"
+              Background="#c9c9c9" 
+              ShowsPreview="True"
+              Width="5"
+              />
+            <tk:DataGrid Grid.Column="2" AutoGenerateColumns="False" x:Name="dataGrid1" 
                      VerticalAlignment="Stretch" 
                      HorizontalAlignment="Stretch" 
                      ItemsSource="{Binding}"
@@ -74,5 +88,6 @@
                         </tk:DataGridTextColumn>
                     </tk:DataGrid.Columns>
                 </tk:DataGrid>
+            </Grid>
         </DockPanel>
 </Window>
