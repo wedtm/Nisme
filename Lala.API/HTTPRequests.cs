@@ -12,11 +12,10 @@ namespace Lala.API
 {
     public static class HTTPRequests
     {
-
         public static string GetData(string URL)
         {
             WebRequest request = WebRequest.Create(URL);
-            request.Headers.Add("Cookie:" + API.Constants.Cookie);
+            request.Headers.Add("Cookie:" + API.Instance.Cookie);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Console.WriteLine(response.StatusDescription);
             Stream dataStream = response.GetResponseStream();
@@ -27,24 +26,20 @@ namespace Lala.API
             response.Close();
             return responseFromServer;
         }
-
         public static Stream GetDataStream(string URL)
         {
             WebRequest request = WebRequest.Create(URL);
-            request.Headers.Add("Cookie:" + API.Constants.Cookie);
+            request.Headers.Add("Cookie:" + API.Instance.Cookie);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Console.WriteLine(response.StatusDescription);
             Stream dataStream = response.GetResponseStream();
             return dataStream;
         }
-
-
         public static string GetLibrary(ulong Number, long Offset)
         {
             string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=songs&includeHistos=false&count=" + Number.ToString() + "&skip=" + Offset.ToString() + "&sortKey=Artist&sortDir=Asc&webSrc=nisme&xml=true";
             return URL;
         }
-
         public static bool GetLoginCookie(string username, string password)
         {
             string URL = "https://www.lala.com/api/User/signin/" + API.Functions.CurrentLalaVersion() + "?email=" + username + "&userpwd=" + password + "&xml=true";
@@ -74,19 +69,27 @@ namespace Lala.API
             }
             else
             {
-                API.Constants.Cookie = plate;
-                API.Constants.UserID = UserID;
+                API.Instance.Cookie = plate;
                 return true;
             }
         }
-
         public static string GetHistos()
         {
+            // DO NOT DELETE, TRACK COUNT RELIES ON HISTOS... :(
             string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=songs&includeHistos=true&count=0&skip=0&sortKey=Artist&sortDir=Asc&webSrc=nisme&counterIds=f.client.byPage.Home.click.link.leftNav.AllSongs%2Cf.click.fromLeftNav.Home";
             return GetData(URL);
         }
-
         public static JObject GetUserInfo()
+        {
+            string URL = "http://www.lala.com/";
+            string Data = GetData(URL);
+            string starterString = "lala.user = ";
+            int start = Data.IndexOf(starterString) + starterString.Length;
+            int end = Data.IndexOf("</script>", start);
+            string json = Data.Substring(start, end - start);
+            return JObject.Parse(json);
+        }
+        public static Hashtable GetPlaylists()
         {
             string URL = "http://www.lala.com/";
             string Data = GetData(URL);
@@ -94,12 +97,7 @@ namespace Lala.API
             int start = Data.IndexOf(starterString) + starterString.Length;
             int end = Data.IndexOf("</script>", start);
             string json = Data.Substring(start, end - start);
-            return JObject.Parse(json);
-        }
-
-        public static Hashtable GetPlaylists()
-        {
-            JObject o = GetUserInfo();
+            JObject o = JObject.Parse(json);
             JArray pls = (JArray)o["playlists"];
             Hashtable ht = new Hashtable();
             foreach (JObject item in pls)
@@ -118,7 +116,7 @@ namespace Lala.API
             }
             catch (Exception)
             {
-                return API.Constants.VERSION;
+                return API.Info.Version.ToString();
             }
         }
     }

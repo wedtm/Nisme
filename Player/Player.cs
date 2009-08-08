@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Lala.API;
 
-namespace Nisme
+namespace Vimae
 {
-    class CurrentPlaylist : List<Lala.API.Song>
+    public partial class Player
     {
-        public CurrentPlaylist()
+        public Player()
         {
-            
+            this.Internals = new Internals();
         }
     }
 }

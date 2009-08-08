@@ -21,15 +21,15 @@ namespace Lala.API
         /// Saves the library in the users Document directory as LalaUserID.nlf
         /// </summary>
         /// <param name="library">Library Object to save</param>
-        public static void SaveLibrary(API.User library)
+        public static void SaveLibrary()
         {
             FileStream fs = new FileStream
-                           ( GetMyDocumentsDir() + "\\" + API.Constants.UserID + ".nlf", FileMode.OpenOrCreate, FileAccess.Write);
+                           ( GetMyDocumentsDir() + "\\" + Lala.API.Instance.CurrentUser.UserID + ".nlf", FileMode.OpenOrCreate, FileAccess.Write);
 
             try
             {
                 BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(fs, library);
+                bf.Serialize(fs, API.Instance.CurrentUser);
             }
             finally
             {
@@ -37,32 +37,27 @@ namespace Lala.API
             }
         }
 
-        public static User OpenLibrary(ulong tracks, bool force)
-        {
-            string filename = GetMyDocumentsDir() + "\\" + API.Constants.UserID + ".nlf";
+        public static void LoadUser(bool force)
+        {            
+            string filename = GetMyDocumentsDir() + "\\" + Lala.API.Instance.CurrentUser.UserID + ".nlf";
             if (File.Exists(filename) && force == false)
             {
                 FileStream fs = new FileStream(filename, FileMode.Open);
                 BinaryFormatter bf = new BinaryFormatter();
-                API.User myLibrary = (API.User)bf.Deserialize(fs);
+                Lala.API.Instance.CurrentUser = (API.User)bf.Deserialize(fs);
                 fs.Close();
-                return myLibrary;
             }
             else
             {
-                User myLibrary = new User();//new API.Library(API.HTTPRequests.GetLibrary(tracks, 0));
-                myLibrary.Library.Playlists.Add(new Playlist(API.HTTPRequests.GetLibrary(tracks, 0), "My Collection", "songs"));
+                Lala.API.Instance.CurrentUser.Library.Playlists.Add(new Playlist(API.HTTPRequests.GetLibrary(Lala.API.Instance.CurrentUser.TotalCount, 0), "My Collection", "songs"));
                 Hashtable pls = HTTPRequests.GetPlaylists();
-                myLibrary.UserID = Functions.LalaUserId();
-                myLibrary.EmailAddress = API.Constants.UserID;
                 IDictionaryEnumerator en = pls.GetEnumerator();
                 while (en.MoveNext())
                 {
                     string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=" + en.Key.ToString() + "&includeHistos=false&count=50&skip=0&sortKey=Offset&sortDir=Asc&webSrc=nisme&xml=true";
-                    myLibrary.Library.Playlists.Add(new Playlist(URL, en.Value.ToString(), en.Key.ToString()));
+                    Lala.API.Instance.CurrentUser.Library.Playlists.Add(new Playlist(URL, en.Value.ToString(), en.Key.ToString()));
                 }
-                SaveLibrary(myLibrary);
-                return myLibrary;
+                SaveLibrary();
             }
         }
 
@@ -129,7 +124,7 @@ namespace Lala.API
             return result;
         }
 
-        public static ulong SetTrackCount()
+        public static ulong GetTrackCount()
         {
             string data = API.HTTPRequests.GetHistos();
             string startString = "\"total\": ";
