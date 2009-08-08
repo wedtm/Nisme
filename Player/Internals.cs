@@ -14,8 +14,6 @@ namespace Vimae
 {
     public partial class Player
     {
-        internal class Internals
-        {
             private static Stream _fs;
             private static long _fsLength;
             private static BASS_FILEPROCS _myStreamCreateUser;
@@ -51,18 +49,9 @@ namespace Vimae
                 }
             }
 
-            internal void PlayNext()
-            {
-                
-                Song selected = (Song)Lala.API.Instance.CurrentUser.Queue[0];
-                RemoveSongFromQueue(0);
-                Lala.API.Instance.CurrentUser.Library.Playing.CurrentSong = selected;
-                PlaySong(selected.PlayLink);
-            }
-
             internal void PlaySong(string PlayURL)
             {
-                Bass.BASS_ChannelStop(Instance.Channel);
+                Bass.BASS_ChannelStop(Channel);
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(PlayURL);
                 req.Headers.Add("Cookie:" + Lala.API.Instance.Cookie);
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
@@ -74,8 +63,9 @@ namespace Vimae
                             new FILEREADPROC(MyFileProcUserRead),
                             new FILESEEKPROC(MyFileProcUserSeek));
                 Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
-                Instance.Channel = Bass.BASS_StreamCreateFileUser(BASSStreamSystem.STREAMFILE_BUFFER, BASSFlag.BASS_STREAM_AUTOFREE, _myStreamCreateUser, IntPtr.Zero);
-                Bass.BASS_ChannelPlay(Instance.Channel, false);
+                Channel = Bass.BASS_StreamCreateFileUser(BASSStreamSystem.STREAMFILE_BUFFER, BASSFlag.BASS_STREAM_AUTOFREE, _myStreamCreateUser, IntPtr.Zero);
+                Bass.BASS_ChannelPlay(Channel, false);
+                this.Played(this, new EventArgs());
             }
 
             private void MyFileProcUserClose(IntPtr user)
@@ -93,9 +83,9 @@ namespace Vimae
 
             void timer_Elapsed(object sender, ElapsedEventArgs e)
             {
-                if (Bass.BASS_ChannelIsActive(Instance.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
+                if (Bass.BASS_ChannelIsActive(Channel) != BASSActive.BASS_ACTIVE_STOPPED)
                     return;
-                Events.OnStop(new Events.StopEventArgs());
+                this.Stopped(this, new EventArgs());
             }
 
             private long MyFileProcUserLength(IntPtr user)
@@ -137,11 +127,5 @@ namespace Vimae
                     return false;
                 }
             }
-
-            private void RemoveSongFromQueue(int p)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
-}

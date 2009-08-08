@@ -11,6 +11,7 @@ namespace Lala.API
     [Serializable]
     public class User
     {
+
         public const int FILE_VERSION = 3; // Change this with each and every change to the User Object structure // = WedTM
         public String Username { get; set; }
         public String UserID { get; set; }

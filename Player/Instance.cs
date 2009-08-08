@@ -7,26 +7,31 @@ namespace Vimae
 {
     public partial class Player
     {
-        public class Instance
-        {
             /// <summary>
             /// Bass identifies the channel by a unique ID, this is it.
             /// </summary>
-            public int Channel { get; set; }
+        public int Channel = new Int32();
 
             /// <summary>
             /// The length of time between each tick. In milliseconds
             /// </summary>
-            public int ProgressTick { get; set; }
+        public int ProgressTick = new Int32();
 
             public class CurrentSong
             {
-                public static double TotalLength { get; set; }
-                public static double CurrentPosition { get; set; }
-                public static double TotalLengthInSeconds { get; set; }
-                public static double CurrentPositionInSeconds { get; set; }
-                public static Lala.API.Song Song { get; set; }
+                public double TotalLength { get; set; }
+                public double CurrentPosition { get; set; }
+                public double TotalLengthInSeconds { get; set; }
+                public double CurrentPositionInSeconds { get; set; }
+                public Lala.API.Song Song { get; set; }
+                public CurrentSong()
+                {
+                    this.TotalLength = new Double();
+                    this.CurrentPosition = new Double();
+                    this.TotalLength = new Double();
+                    this.TotalLengthInSeconds = new Double();
+                    this.Song = new Lala.API.Song();
+                }
             }
         }
     }
-}

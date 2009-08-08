@@ -32,7 +32,7 @@ namespace Nisme.Controls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            parent.PlayNext();
+            parent.PlayNextInQueue();
         }
     }
 }

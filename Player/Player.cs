@@ -7,9 +7,5 @@ namespace Vimae
 {
     public partial class Player
     {
-        public Player()
-        {
-            this.Internals = new Internals();
-        }
     }
 }

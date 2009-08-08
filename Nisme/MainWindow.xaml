@@ -55,6 +55,7 @@
                          CanUserAddRows="False"
                          CanUserResizeRows="False"
                          KeyDown="dataGrid1_KeyDown"
+                         MouseDoubleClick="dataGrid1_MouseDoubleClick"
                      CellStyle="{StaticResource defaultCellStyle}">
                     <tk:DataGrid.Columns>
                         <tk:DataGridTextColumn Header="Title"  MinWidth="300" Width="*"  

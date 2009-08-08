@@ -13,7 +13,6 @@ using Un4seen.Bass;
 using System.IO;
 using System.Runtime.InteropServices;
 using Lala.API;
-using Vimae;
 
 namespace Nisme
 {
@@ -23,6 +22,8 @@ namespace Nisme
     public partial class MainWindow : Window
     {
         DispatcherTimer progressTimer;
+        //Player player;
+        Vimae.Player player;
         public MainWindow()
         {
             InitializeComponent();
@@ -39,12 +40,12 @@ namespace Nisme
             BassNet.Registration("miles@vimae.com", "2X22292815172922");
             nowPlaying.Artist.Text = String.Empty;
             nowPlaying.Song.Text = String.Empty;
-            Player p = new Player();
-            p.
-            Player.Events.Play += new EventHandler<Player.Events.PlayEventArgs>(Events_Play);
-            Player.Events.Stop += new EventHandler<Player.Events.StopEventArgs>(Events_Stop);
             nowPlaying.parent = this;
             menuBar.parent = this;
+            player = new Vimae.Player();
+            player.Played += new EventHandler(player_Played);
+            player.Stopped += new EventHandler(player_Stopped);
+            player.QueueModified += new EventHandler(player_QueueModified);
             menuBar.NickName.Text = Lala.API.Instance.CurrentUser.Username;
             LoadLibrary();
             progressTimer = new DispatcherTimer();
@@ -53,21 +54,65 @@ namespace Nisme
             progressTimer.Start();
         }
 
-        void Events_Stop(object sender, Player.Events.StopEventArgs e)
+        void player_QueueModified(object sender, EventArgs e)
         {
-            nowPlaying.Visibility = Visibility.Collapsed;
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                {
+                    nowPlaying.QueueLength.Text = Lala.API.Instance.CurrentUser.Queue.Count.ToString();
+                }));
         }
 
-        void Events_Play(object sender, Player.Events.PlayEventArgs e)
+        void player_Stopped(object sender, EventArgs e)
         {
-            nowPlaying.Visibility = Visibility.Visible;
-            throw new NotImplementedException();
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                nowPlaying.Visibility = Visibility.Collapsed;
+            }));
+            progressTimer.Stop();
+        }
+
+        void player_Played(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                nowPlaying.Visibility = Visibility.Visible;
+            }));
+            progressTimer.Start();
+        }
+
+
+        void Events_Play(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                nowPlaying.Visibility = Visibility.Visible;
+                progressTimer.Start();
+            }));
         }
 
 
         void progressTimer_Tick(object sender, EventArgs e)
         {
-            Player.Controls.Update();
+            if (Bass.BASS_ChannelIsActive(player.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
+            {
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                {
+                    player.Update();
+                    double PercentOfTrack = player.Song.CurrentPositionInSeconds / player.Song.TotalLengthInSeconds;
+                    double trackBarLength = nowPlaying.trackBarBg.ActualWidth;
+                    nowPlaying.playedAmount.Width = PercentOfTrack * trackBarLength;
+                    nowPlaying.TotalTime.Text = Lala.API.Functions.SecondsToTime(player.Song.TotalLengthInSeconds, false);
+                    nowPlaying.CurrentTime.Text = Lala.API.Functions.SecondsToTime(player.Song.CurrentPositionInSeconds, false);
+                    double percentOfDownload = player.Song.CurrentPosition / player.Song.TotalLength;
+                    nowPlaying.loadedAmount.Width = percentOfDownload * trackBarLength;
+                }));
+            }
+            else if (Lala.API.Instance.CurrentUser.Queue.Count > 0)
+            {
+                PlayNextInQueue();
+            }
+            else
+                progressTimer.Stop();
         }
 
         private void LoadLibrary()
@@ -112,20 +157,36 @@ namespace Nisme
         {
             progressTimer.IsEnabled = true;
             Song selected = (Song)dataGrid1.SelectedItem;
-            Player.Controls.Play(selected);
+            player.Play(selected);
             nowPlaying.Artist.Text = selected.Artist;
             nowPlaying.Song.Text = selected.Title;
             nowPlaying.AlbumImage.Source = new BitmapImage(new Uri(selected.AlbumImage));
         }
 
 
-        public void PlayNext()
+        public void PlayNextInQueue()
         {
             Song selected = (Song)Lala.API.Instance.CurrentUser.Queue[0];
-
+            player.RemoveSongFromQueue(0);
+            Lala.API.Instance.CurrentUser.Library.Playing.CurrentSong = selected;
             nowPlaying.Artist.Text = selected.Artist;
             nowPlaying.Song.Text = selected.Title;
             nowPlaying.AlbumImage.Source = new BitmapImage(new Uri(selected.AlbumImage));
+            player.Play(selected);
+        }
+
+        public void PlayNewQueue()
+        {
+           Lala.API.Instance.CurrentUser.Queue.Clear();
+            Song selected = (Song)dataGrid1.SelectedItem;
+            int StartIndex = dataGrid1.Items.IndexOf(selected);
+            Lala.API.Instance.CurrentUser.Queue.Add(selected);
+            for (int i = 1; i < 50; i++)
+            {
+                if((i + StartIndex) <= (dataGrid1.Items.Count - StartIndex) - 1)
+                player.AddSongToQueue((Song)dataGrid1.Items[i + StartIndex]);
+            }
+            PlayNextInQueue();
         }
 
 
@@ -135,8 +196,13 @@ namespace Nisme
             if (e.Key == Key.Q)
             {
                 Song sng = (Song)dataGrid1.SelectedItem;
-                Player.Controls.Queue.AddSongToQueue(sng);
+                player.AddSongToQueue(sng);
             }
+        }
+
+        private void dataGrid1_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            PlayNewQueue();
         }
     }
 }
