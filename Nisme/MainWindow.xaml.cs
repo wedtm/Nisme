@@ -48,7 +48,15 @@ namespace Nisme
             player.Stopped += new EventHandler(player_Stopped);
             player.QueueModified += new EventHandler(player_QueueModified);
             menuBar.NickName.Text = Lala.API.Instance.CurrentUser.Username;
-            LoadLibrary();
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                LoadLibrary(false);
+                if (Lala.API.Functions.LibraryNeedsUpdate(Lala.API.Instance.CurrentUser.Library.TrackCount))
+                {
+                    LoadLibrary(true);
+                    MessageBox.Show("Your library has been updated.");
+                }
+            }));
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = new TimeSpan(1000); // This equals to 1 second, some tweaking may be necessary. //- WedTM
             progressTimer.Tick += new EventHandler(progressTimer_Tick);
@@ -115,13 +123,18 @@ namespace Nisme
                 progressTimer.Stop();
         }
 
-        private void LoadLibrary()
+        private void LoadLibrary(bool force)
         {
-            Lala.API.Functions.LoadUser(false); // Loads the current user and populates Lala.API.Instance.CurrentUser with their data.
+            Lala.API.Functions.LoadUser(force); // Loads the current user and populates Lala.API.Instance.CurrentUser with their data.
             Lala.API.Instance.CurrentUser.Library.Playing = Lala.API.Instance.CurrentUser.Library.Playlists[0];
             //dataGrid1.DataContext = UserLibrary.Playing.Songs;
             dataGrid1.ItemsSource = Lala.API.Instance.CurrentUser.Library.Playing.Songs;
             playList.PlaylistsContainer.ItemsSource = Lala.API.Instance.CurrentUser.Library.Playlists;
+        }
+
+        private void UnloadLibrary()
+        {
+            Lala.API.Instance.CurrentUser = null;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -186,12 +199,16 @@ namespace Nisme
         {
            Lala.API.Instance.CurrentUser.Queue.Clear();
             Song selected = (Song)dataGrid1.SelectedItem;
+            if (selected == null)
+                return;
             int StartIndex = dataGrid1.Items.IndexOf(selected);
             Lala.API.Instance.CurrentUser.Queue.Add(selected);
-            for (int i = 1; i < 50; i++)
+            for (int i = 1; i < 99; i++)
             {
-                if((i + StartIndex) <= (dataGrid1.Items.Count - StartIndex) - 1)
-                player.AddSongToQueue((Song)dataGrid1.Items[i + StartIndex]);
+                if ((i + StartIndex) <= (dataGrid1.Items.Count - StartIndex) - 1)
+                {
+                    player.AddSongToQueue((Song)dataGrid1.Items[i + StartIndex]);
+                }
             }
             PlayNextInQueue();
         }
@@ -203,6 +220,8 @@ namespace Nisme
             if (e.Key == Key.Q)
             {
                 Song sng = (Song)dataGrid1.SelectedItem;
+                if (sng == null)
+                    return;
                 player.AddSongToQueue(sng);
             }
         }

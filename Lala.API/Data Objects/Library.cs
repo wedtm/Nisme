@@ -12,6 +12,13 @@ namespace Lala.API
         public List<Playlist> Playlists { get; set; }
         public Playlist Playing { get; set; }
         public Playlist Displayed { get; set; }
+        public int TrackCount
+        {
+            get
+            {
+               return Playlists[0].Songs.Count;
+            }
+        }
         public Library()
         {
             Owner = String.Empty;

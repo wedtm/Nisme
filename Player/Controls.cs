@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Lala.API;
 using Un4seen.Bass;
+using Un4seen.Bass.AddOn.Mix;
 
 namespace Vimae
 {
@@ -12,6 +13,7 @@ namespace Vimae
         public void Next()
         {
             Song next = (Song)Lala.API.Instance.CurrentUser.Queue[0];
+            NowPlaying = next;
             RemoveSongFromQueue(0);
             Play(next);
         }
@@ -20,20 +22,21 @@ namespace Vimae
         }
         public void Stop()
         {
-            Bass.BASS_ChannelStop(Channel);
+            BassMix.BASS_Mixer_ChannelRemove(this.Channel);
         }
         public void Pause()
         {
-            Bass.BASS_ChannelPause(Channel);
+            BassMix.BASS_Mixer_ChannelPause(this.Channel);
         }
         public void Resume()
         {
-            Bass.BASS_ChannelPlay(Channel, false);
+            BassMix.BASS_Mixer_ChannelPlay(this.Channel);
         }
         public void Play(Lala.API.Song song)
         {
             Stop();
             Lala.API.Instance.CurrentUser.Library.Playing.CurrentSong = song;
+            NowPlaying = song;
             PlaySong(song.PlayLink);
         }
 
@@ -41,7 +44,7 @@ namespace Vimae
 
         public void Update()
         {
-            if (Bass.BASS_ChannelIsActive(Channel) != BASSActive.BASS_ACTIVE_STOPPED)
+            if (BassMix.BASS_Mixer_ChannelIsActive(this.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
             {
                 Song.TotalLength = Bass.BASS_StreamGetFilePosition(Channel, BASSStreamFilePosition.BASS_FILEPOS_END);
                 Song.CurrentPosition = Bass.BASS_StreamGetFilePosition(Channel, BASSStreamFilePosition.BASS_FILEPOS_DOWNLOAD);

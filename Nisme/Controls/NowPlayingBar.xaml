@@ -197,7 +197,6 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="95" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="80" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -225,10 +224,6 @@
                                 </Grid.ColumnDefinitions>
                                 <Grid.Children>
                                     <TextBlock Grid.Row="0" Grid.Column="2" FontSize="13" Foreground="#e8f1f7" FontWeight="Bold" HorizontalAlignment="Center" x:Name="TotalTime" VerticalAlignment="Center" Margin="5,0,5,0">0:00</TextBlock>
-                                    <!--
-                        <ProgressBar Foreground="Blue" Opacity="1" Background="LightGray" Grid.Row="0" Grid.Column="1" Name="progressOfTrack" Height="15" MinWidth="600" VerticalAlignment="Top" />
-                        <ProgressBar Foreground="CornflowerBlue" Background="LightGray" Opacity="0.30" Grid.Row="0" Grid.Column="1" Name="progressOfDownload" Height="15" MinWidth="600" />
-                        -->
                                     <Rectangle Grid.Column="1" Grid.Row="0" Height="10"  MinWidth="400" x:Name="trackBarBg" VerticalAlignment="Center"  HorizontalAlignment="Stretch">
                                         <Rectangle.Fill>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -257,10 +252,7 @@
                                 </Grid.Children>
                             </Grid>
                         </StackPanel>
-                        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Top">
-                            <Button Style="{StaticResource InformButton}" Margin="5" Height="30">Add</Button>
-                            <Button Style="{StaticResource InformButton}" Margin="5,0,5,0" Height="30">Buy MP3</Button>
-                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Top"></StackPanel>
                     </Grid>
                 </Grid>
         </Border>

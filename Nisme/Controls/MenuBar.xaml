@@ -23,45 +23,16 @@
             </LinearGradientBrush>
         </Grid.Background>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50" />
-            <!-- 0 -->
-            <ColumnDefinition Width="30" />
-            <!-- 1 -->
             <ColumnDefinition Width="100" />
-            <!-- 2 -->
-            <ColumnDefinition Width="100" />
-            <!-- 3 -->
-            <ColumnDefinition Width="100" />
-            <!-- 4 -->
             <ColumnDefinition Width="*" />
-            <!-- 5 -->
             <ColumnDefinition Width="125" />
-            <!-- 6 -->
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" BorderBrush="#333333" BorderThickness="0,0,1,0">
+        <Border Grid.Column="1" BorderBrush="#333333" BorderThickness="0,0,1,0">
         </Border>
-        <Border Grid.Column="1" BorderBrush="#333333" BorderThickness="0,0,1,0" MouseEnter="Border_MouseEnter">
-            <Canvas MouseLeftButtonUp="Canvas_MouseLeftButtonUp">
-                <Path Fill="#b9cccc" Data="M 10,10 l -5,0 l 0,5 M 15,25 l 5,0 l 0,-5 M 20,10 l -5,0 l 5,5 M 15,25 l 5,0 l 0,-5 M 5,25 l 5,0 l -5,-5 M 15,25 l 5,0 l 0,-5" />
-            </Canvas>
-        </Border>
-        <Border Grid.Column="2" BorderBrush="#333333" BorderThickness="0,0,1,0">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock>My Nisme</TextBlock>
-            </StackPanel>
-        </Border>
-        <Border Grid.Column="3" BorderBrush="#333333" BorderThickness="0,0,1,0">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock>My Collection</TextBlock>
-            </StackPanel>
-        </Border>
-        <Border Grid.Column="4" BorderBrush="#333333" BorderThickness="0,0,1,0">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock>Browse Music</TextBlock>
-            </StackPanel>
-        </Border>
-        <TextBlock Grid.Column="5" Margin="10,0,10,0" HorizontalAlignment="Right">v2.0b6</TextBlock>
-        <Border Grid.Column="6" BorderBrush="#333333" BorderThickness="0,0,0,0">
+        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+            <TextBlock Grid.Column="0"  HorizontalAlignment="Center">v2.0b6</TextBlock>
+        </StackPanel>
+        <Border Grid.Column="2" BorderBrush="#333333" BorderThickness="0,0,0,0">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                     <GradientStop Color="#111111" Offset="0.0" />
@@ -69,7 +40,7 @@
                 </LinearGradientBrush>
             </Border.Background>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock x:Name="NickName">WedTM</TextBlock>
+                <TextBlock x:Name="NickName">N/A</TextBlock>
             </StackPanel>
         </Border>
     </Grid>

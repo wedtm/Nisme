@@ -16,7 +16,7 @@ namespace Lala.API
         {
             return Name;
         }
-        public String Name { get; set; }
+         public String Name { get; set; }
         public String ID { get; set; }
         public Song Playing { get; set; }
         public List<Histo> Histos { get; set; }

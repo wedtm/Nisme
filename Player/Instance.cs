@@ -10,7 +10,7 @@ namespace Vimae
             /// <summary>
             /// Bass identifies the channel by a unique ID, this is it.
             /// </summary>
-        public int Channel = new Int32();
+        public int Channel = 0;
 
             /// <summary>
             /// The length of time between each tick. In milliseconds

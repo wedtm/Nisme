@@ -49,6 +49,8 @@ namespace Lala.API
             }
             else
             {
+                if(File.Exists(filename))
+                    File.Delete(filename);
                 Lala.API.Instance.CurrentUser.Library.Playlists.Add(new Playlist(API.HTTPRequests.GetLibrary(Lala.API.Instance.CurrentUser.TotalCount, 0), "My Collection", "songs"));
                 Hashtable pls = HTTPRequests.GetPlaylists();
                 IDictionaryEnumerator en = pls.GetEnumerator();
@@ -132,6 +134,14 @@ namespace Lala.API
             int end = data.IndexOf(",\n", start);
             string count = data.Substring(start + startString.Length, end - start - startString.Length);
             return Convert.ToUInt64(count);
+        }
+
+        public static Boolean LibraryNeedsUpdate(int LibraryTrackCount)
+        {
+            if (Convert.ToUInt64(LibraryTrackCount) != GetTrackCount())
+                return true;
+            else
+                return false;
         }
     }
 }

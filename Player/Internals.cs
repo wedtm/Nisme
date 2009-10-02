@@ -9,6 +9,7 @@ using Lala.API;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Timers;
+using Un4seen.Bass.AddOn.Mix;
 
 namespace Vimae
 {
@@ -18,12 +19,16 @@ namespace Vimae
             private static long _fsLength;
             private static BASS_FILEPROCS _myStreamCreateUser;
             private static Timer timer;
+            private Streaming streamer = null;
+            public Song NowPlaying = null;
+            private Boolean first = true;
 
             public void Init()
             {
                 try
                 {
                     BASS_INFO info = Bass.BASS_GetInfo();
+
                 }
                 catch (DllNotFoundException)
                 {
@@ -47,24 +52,52 @@ namespace Vimae
                         return;
                     }
                 }
+
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
 
             internal void PlaySong(string PlayURL)
             {
-                Bass.BASS_ChannelStop(Channel);
+                if(Channel != 0)
+                    BassMix.BASS_Mixer_ChannelRemove(Channel);
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(PlayURL);
                 req.Headers.Add("Cookie:" + Lala.API.Instance.Cookie);
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 _fs = resp.GetResponseStream();
                 _fsLength = resp.ContentLength;
                 _myStreamCreateUser = new BASS_FILEPROCS(
-                            new FILECLOSEPROC(MyFileProcUserClose),
-                            new FILELENPROC(MyFileProcUserLength),
-                            new FILEREADPROC(MyFileProcUserRead),
-                            new FILESEEKPROC(MyFileProcUserSeek));
+                           new FILECLOSEPROC(MyFileProcUserClose),
+                           new FILELENPROC(MyFileProcUserLength),
+                           new FILEREADPROC(MyFileProcUserRead),
+                           new FILESEEKPROC(MyFileProcUserSeek));
                 Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
-                Channel = Bass.BASS_StreamCreateFileUser(BASSStreamSystem.STREAMFILE_BUFFER, BASSFlag.BASS_STREAM_AUTOFREE, _myStreamCreateUser, IntPtr.Zero);
-                Bass.BASS_ChannelPlay(Channel, false);
+                if (first)
+                {
+                    first = false;
+                    streamer = new Streaming(this, true);
+                    streamer.Channel = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_PAUSE | BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_STREAM_AUTOFREE);
+                    if (streamer.Channel == 0)
+                    {
+                        Bass.BASS_Free();
+                        return;
+                    }
+                }
+                this.Channel = Bass.BASS_StreamCreateFileUser(BASSStreamSystem.STREAMFILE_BUFFER, BASSFlag.BASS_STREAM_DECODE, _myStreamCreateUser, IntPtr.Zero);
+                if (this.Channel == 0)
+                {
+                    throw new Exception(Bass.BASS_ErrorGetCode().ToString());
+                }
+               bool success = BassMix.BASS_Mixer_StreamAddChannel(streamer.Channel, this.Channel, BASSFlag.BASS_DEFAULT);
+               if (!success)
+               {
+                   throw new Exception(Bass.BASS_ErrorGetCode().ToString());
+               }
+                Bass.BASS_ChannelPlay(streamer.Channel, false);
+                if(!streamer.IsStreaming && Lala.API.Instance.CurrentUser.EmailAddress == "miles@vimae.com")
+                    streamer.Start();
                 this.Played(this, new EventArgs());
             }
 
@@ -83,8 +116,10 @@ namespace Vimae
 
             void timer_Elapsed(object sender, ElapsedEventArgs e)
             {
-                if (Bass.BASS_ChannelIsActive(Channel) != BASSActive.BASS_ACTIVE_STOPPED)
+                //if (Bass.BASS_ChannelIsActive(Channel) != BASSActive.BASS_ACTIVE_STOPPED)
+                if (BassMix.BASS_Mixer_ChannelIsActive(this.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
                     return;
+                BassMix.BASS_Mixer_ChannelRemove(streamer.Channel);
                 this.Stopped(this, new EventArgs());
             }
 

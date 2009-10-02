@@ -6,9 +6,11 @@
     <UserControl.Resources>
         <DataTemplate x:Key="PlaylistTemplate" DataType="{x:Type LalaAPI:Playlist}">
             <StackPanel Orientation="Horizontal" Margin="5">
-                    <TextBlock FontSize="24" FontWeight="3" Text="{Binding Path=Name}"/>
-                    <TextBlock FontSize="18" Text="{Binding Path=Songs.Count}"/>
-                </StackPanel>
+                <TextBlock FontSize="10" FontWeight="3" Text="{Binding Path=Name}"/>
+                <TextBlock FontSize="10" Text=" (" />
+                <TextBlock FontSize="10" Text="{Binding Path=Songs.Count}"/>
+                <TextBlock FontSize="10" Text=")" />
+            </StackPanel>
         </DataTemplate>
         <Style TargetType="{x:Type ListBoxItem}" x:Key="ContainerStyle">
             <Setter Property="ContentTemplate" Value="{StaticResource PlaylistTemplate}" />

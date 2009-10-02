@@ -11,6 +11,5 @@ namespace Vimae
         public event EventHandler Stopped;
         public event EventHandler Resumed;
         public event EventHandler QueueModified;
-
     }
 }
