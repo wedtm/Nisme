@@ -39,10 +39,12 @@ namespace Nisme
 
         private void AttemptLogin(string email, bool newUser)
         {
+            LoginButton.IsEnabled = false;
             if (!Lala.API.HTTPRequests.GetLoginCookie(email, UsersPassword))
             {
                // passwordBox1.Password = String.Empty;
                 MessageBox.Show("Incorrect Login Credentials.");
+                LoginButton.IsEnabled = true;
             }
             else
             {
@@ -64,6 +66,15 @@ namespace Nisme
         {
             UsersPassword = NewUserPassword.Password;            
             AttemptLogin(Email.Text, true);
+        }
+
+        private void NewUserPassword_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                UsersPassword = NewUserPassword.Password;
+                AttemptLogin(Email.Text, true);
+            }
         }
     }
 }
