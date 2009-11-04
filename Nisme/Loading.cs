@@ -57,7 +57,7 @@ namespace Nisme
                 timer = 0;
             }
             label1.Text = text;
-            Thread.Sleep(300);
+            Thread.Sleep(100);
         }
 
     }

@@ -37,6 +37,7 @@ namespace Nisme
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this.Hide();
             BassNet.Registration("miles@vimae.com", "2X22292815172922");
             nowPlaying.Artist.Text = String.Empty;
             nowPlaying.Song.Text = String.Empty;
@@ -54,6 +55,7 @@ namespace Nisme
             progressTimer.Interval = new TimeSpan(1000); // This equals to 1 second, some tweaking may be necessary. //- WedTM
             progressTimer.Tick += new EventHandler(progressTimer_Tick);
             progressTimer.Start();
+            this.Show();
         }
 
         void LoadLibrary()
