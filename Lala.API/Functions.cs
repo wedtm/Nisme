@@ -6,11 +6,49 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows;
 
 namespace Lala.API
 {
     public class Functions
     {
+
+        public static void DownloadDlls()
+        {
+            if (!File.Exists("bass.dll") || !File.Exists("bassmix.dll"))
+            {
+                MessageBoxResult res = MessageBox.Show("This appears to be the first time you've started Nisme. We need to go to the internet and download some important stuff. Is that okay?", "Missing DLL's", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (res == MessageBoxResult.Yes)
+                {
+
+                    string url = String.Empty;
+                    if (IntPtr.Size == 4)
+                        url = "http://nisme.googlecode.com/files/bass.x32";
+                    else
+                        url = "http://nisme.googlecode.com/files/bass.x64";
+
+                    WebClient Client = new WebClient();
+                    if (!File.Exists("bass.dll"))
+                        Client.DownloadFile(url, "bass.dll");
+
+                    if (IntPtr.Size == 4)
+                        url = "http://nisme.googlecode.com/files/bassmix.x32";
+                    else
+                        url = "http://nisme.googlecode.com/files/bassmix.x64";
+
+                    if (!File.Exists("bassmix.dll"))
+                        Client.DownloadFile(url, "bassmix.dll");
+
+                    MessageBox.Show("Sweet! We're all set! Let's listen to some music!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please either re-run and allow Nisme to download bass.dll and bassmix.dll, or manually download it to Nisme's directory. The application will now exit.", "Exiting", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Application.Current.Shutdown();
+                    return;
+                }
+            }
+        }
 
         public static String GetMyDocumentsDir()
         {

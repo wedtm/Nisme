@@ -35,6 +35,7 @@ namespace Nisme
             //GlassHelper.ExtendGlassFrame(this, new Thickness(0, 30, 0, 0));
         }
 
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.Hide();
@@ -109,26 +110,34 @@ namespace Nisme
 
         void progressTimer_Tick(object sender, EventArgs e)
         {
-            if (Bass.BASS_ChannelIsActive(player.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
+            try
             {
-                this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                if (Bass.BASS_ChannelIsActive(player.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
                 {
-                    player.Update();
-                    double PercentOfTrack = player.Song.CurrentPositionInSeconds / player.Song.TotalLengthInSeconds;
-                    double trackBarLength = nowPlaying.trackBarBg.ActualWidth;
-                    nowPlaying.playedAmount.Width = PercentOfTrack * trackBarLength;
-                    nowPlaying.TotalTime.Text = Lala.API.Functions.SecondsToTime(player.Song.TotalLengthInSeconds, false);
-                    nowPlaying.CurrentTime.Text = Lala.API.Functions.SecondsToTime(player.Song.CurrentPositionInSeconds, false);
-                    double percentOfDownload = player.Song.CurrentPosition / player.Song.TotalLength;
-                    nowPlaying.loadedAmount.Width = percentOfDownload * trackBarLength;
-                }));
+                    this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                    {
+                        player.Update();
+                        double PercentOfTrack = player.Song.CurrentPositionInSeconds / player.Song.TotalLengthInSeconds;
+                        double trackBarLength = nowPlaying.trackBarBg.ActualWidth;
+                        nowPlaying.playedAmount.Width = PercentOfTrack * trackBarLength;
+                        nowPlaying.TotalTime.Text = Lala.API.Functions.SecondsToTime(player.Song.TotalLengthInSeconds, false);
+                        nowPlaying.CurrentTime.Text = Lala.API.Functions.SecondsToTime(player.Song.CurrentPositionInSeconds, false);
+                        double percentOfDownload = player.Song.CurrentPosition / player.Song.TotalLength;
+                        nowPlaying.loadedAmount.Width = percentOfDownload * trackBarLength;
+                    }));
+                }
+                else if (Lala.API.Instance.CurrentUser.Queue.Count > 0)
+                {
+                    PlayNextInQueue();
+                }
+                else
+                    progressTimer.Stop();
             }
-            else if (Lala.API.Instance.CurrentUser.Queue.Count > 0)
+
+            catch (DllNotFoundException)
             {
-                PlayNextInQueue();
+                Functions.DownloadDlls();
             }
-            else
-                progressTimer.Stop();
         }
 
 

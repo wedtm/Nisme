@@ -22,7 +22,14 @@ namespace Vimae
         }
         public void Stop()
         {
-            BassMix.BASS_Mixer_ChannelRemove(this.Channel);
+            try
+            {
+                BassMix.BASS_Mixer_ChannelRemove(this.Channel);
+            }
+            catch (DllNotFoundException)
+            {
+                Functions.DownloadDlls();
+            }
         }
         public void Pause()
         {

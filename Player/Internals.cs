@@ -21,46 +21,6 @@ namespace Vimae
             private static Timer timer;
             public Song NowPlaying = null;
 
-            public void Init()
-            {
-                try
-                {
-                    BASS_INFO info = Bass.BASS_GetInfo();
-
-                }
-                catch (DllNotFoundException)
-                {
-                    MessageBoxResult res = MessageBox.Show("Could not find the appropriate bass.dll file within Nisme's directory. Would you like to download the appropriate version now?", "Missing DLL's", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (res == MessageBoxResult.Yes)
-                    {
-                        string url = String.Empty;
-                        if (IntPtr.Size == 4)
-                            url = "http://nisme.googlecode.com/files/bass.x32";
-                        else
-                            url = "http://nisme.googlecode.com/files/bass.x64";
-
-                        WebClient Client = new WebClient();
-                        Client.DownloadFile(url, "bass.dll");
-                        if (IntPtr.Size == 4)
-                            url = "http://nisme.googlecode.com/files/bassmix.x32";
-                        else
-                            url = "http://nisme.googlecode.com/files/bassmix.x64";
-                        Client.DownloadFile(url, "bassmix.dll");
-                        MessageBox.Show("File has been successfully downloaded.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please either re-run and allow Nisme to download bass.dll, or manually download it to Nisme's directory. The application will now exit.", "Exiting", MessageBoxButton.OK, MessageBoxImage.Error);
-                        Application.Current.Shutdown();
-                        return;
-                    }
-                }
-
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-            }
 
             internal void PlaySong(string PlayURL)
             {
