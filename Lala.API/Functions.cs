@@ -37,6 +37,8 @@ namespace Lala.API
             }
         }
 
+
+
         public static void LoadUser(bool force)
         {            
             string filename = GetMyDocumentsDir() + "\\" + Lala.API.Instance.CurrentUser.UserID + ".nlf";
@@ -49,6 +51,7 @@ namespace Lala.API
             }
             else
             {
+                
                 if(File.Exists(filename))
                     File.Delete(filename);
                 Lala.API.Instance.CurrentUser.Library.Playlists.Add(new Playlist(API.HTTPRequests.GetLibrary(Lala.API.Instance.CurrentUser.TotalCount, 0), "My Collection", "songs"));

@@ -44,7 +44,7 @@ namespace Vimae
 
         public void Update()
         {
-            if (BassMix.BASS_Mixer_ChannelIsActive(this.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
+            if (Bass.BASS_ChannelIsActive(this.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
             {
                 Song.TotalLength = Bass.BASS_StreamGetFilePosition(Channel, BASSStreamFilePosition.BASS_FILEPOS_END);
                 Song.CurrentPosition = Bass.BASS_StreamGetFilePosition(Channel, BASSStreamFilePosition.BASS_FILEPOS_DOWNLOAD);

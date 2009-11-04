@@ -19,9 +19,7 @@ namespace Vimae
             private static long _fsLength;
             private static BASS_FILEPROCS _myStreamCreateUser;
             private static Timer timer;
-            private Streaming streamer = null;
             public Song NowPlaying = null;
-            private Boolean first = true;
 
             public void Init()
             {
@@ -43,6 +41,11 @@ namespace Vimae
 
                         WebClient Client = new WebClient();
                         Client.DownloadFile(url, "bass.dll");
+                        if (IntPtr.Size == 4)
+                            url = "http://nisme.googlecode.com/files/bassmix.x32";
+                        else
+                            url = "http://nisme.googlecode.com/files/bassmix.x64";
+                        Client.DownloadFile(url, "bassmix.dll");
                         MessageBox.Show("File has been successfully downloaded.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
@@ -61,8 +64,8 @@ namespace Vimae
 
             internal void PlaySong(string PlayURL)
             {
-                if(Channel != 0)
-                    BassMix.BASS_Mixer_ChannelRemove(Channel);
+                if(this.Channel != 0)
+                    Bass.BASS_ChannelStop(this.Channel);
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(PlayURL);
                 req.Headers.Add("Cookie:" + Lala.API.Instance.Cookie);
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
@@ -74,31 +77,13 @@ namespace Vimae
                            new FILEREADPROC(MyFileProcUserRead),
                            new FILESEEKPROC(MyFileProcUserSeek));
                 Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero);
-                if (first)
-                {
-                    first = false;
-                    streamer = new Streaming(this, true);
-                    streamer.Channel = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_MIXER_PAUSE | BASSFlag.BASS_MIXER_DOWNMIX | BASSFlag.BASS_STREAM_AUTOFREE);
-                    if (streamer.Channel == 0)
-                    {
-                        Bass.BASS_Free();
-                        return;
-                    }
-                }
-                this.Channel = Bass.BASS_StreamCreateFileUser(BASSStreamSystem.STREAMFILE_BUFFER, BASSFlag.BASS_STREAM_DECODE, _myStreamCreateUser, IntPtr.Zero);
+                this.Channel = Bass.BASS_StreamCreateFileUser(BASSStreamSystem.STREAMFILE_BUFFER, BASSFlag.BASS_STREAM_AUTOFREE, _myStreamCreateUser, IntPtr.Zero);
                 if (this.Channel == 0)
                 {
                     throw new Exception(Bass.BASS_ErrorGetCode().ToString());
                 }
-               bool success = BassMix.BASS_Mixer_StreamAddChannel(streamer.Channel, this.Channel, BASSFlag.BASS_DEFAULT);
-               if (!success)
-               {
-                   throw new Exception(Bass.BASS_ErrorGetCode().ToString());
-               }
-                Bass.BASS_ChannelPlay(streamer.Channel, false);
-                if(!streamer.IsStreaming && Lala.API.Instance.CurrentUser.EmailAddress == "miles@vimae.com")
-                    streamer.Start();
-                this.Played(this, new EventArgs());
+                 Bass.BASS_ChannelPlay(this.Channel, false);
+               this.Played(this, new EventArgs());
             }
 
             private void MyFileProcUserClose(IntPtr user)
@@ -116,10 +101,9 @@ namespace Vimae
 
             void timer_Elapsed(object sender, ElapsedEventArgs e)
             {
-                //if (Bass.BASS_ChannelIsActive(Channel) != BASSActive.BASS_ACTIVE_STOPPED)
-                if (BassMix.BASS_Mixer_ChannelIsActive(this.Channel) != BASSActive.BASS_ACTIVE_STOPPED)
+                if (Bass.BASS_ChannelIsActive(Channel) != BASSActive.BASS_ACTIVE_STOPPED)
                     return;
-                BassMix.BASS_Mixer_ChannelRemove(streamer.Channel);
+                Bass.BASS_ChannelStop(this.Channel);
                 this.Stopped(this, new EventArgs());
             }
 

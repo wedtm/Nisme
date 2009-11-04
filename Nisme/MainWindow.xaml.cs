@@ -48,19 +48,25 @@ namespace Nisme
             player.Stopped += new EventHandler(player_Stopped);
             player.QueueModified += new EventHandler(player_QueueModified);
             menuBar.NickName.Text = Lala.API.Instance.CurrentUser.Username;
-            this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
-            {
-                LoadLibrary(false);
-                if (Lala.API.Functions.LibraryNeedsUpdate(Lala.API.Instance.CurrentUser.Library.TrackCount))
-                {
-                    LoadLibrary(true);
-                    MessageBox.Show("Your library has been updated.");
-                }
-            }));
+            Loading win = new Loading();
+            win.ShowModeless(new ThreadStart(LoadLibrary));
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = new TimeSpan(1000); // This equals to 1 second, some tweaking may be necessary. //- WedTM
             progressTimer.Tick += new EventHandler(progressTimer_Tick);
             progressTimer.Start();
+        }
+
+        void LoadLibrary()
+        {
+           // this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+           // {
+                LoadLibrary(false);
+                if (Lala.API.Functions.LibraryNeedsUpdate(Lala.API.Instance.CurrentUser.Library.TrackCount))
+                {
+
+                    LoadLibrary(true);
+                }
+           // }));
         }
 
         void player_QueueModified(object sender, EventArgs e)
@@ -123,15 +129,42 @@ namespace Nisme
                 progressTimer.Stop();
         }
 
+
         private void LoadLibrary(bool force)
         {
-            Lala.API.Functions.LoadUser(force); // Loads the current user and populates Lala.API.Instance.CurrentUser with their data.
-            Lala.API.Instance.CurrentUser.Library.Playing = Lala.API.Instance.CurrentUser.Library.Playlists[0];
-            //dataGrid1.DataContext = UserLibrary.Playing.Songs;
-            dataGrid1.ItemsSource = Lala.API.Instance.CurrentUser.Library.Playing.Songs;
-            playList.PlaylistsContainer.ItemsSource = Lala.API.Instance.CurrentUser.Library.Playlists;
+            
+                    Lala.API.Functions.LoadUser(force); // Loads the current user and populates Lala.API.Instance.CurrentUser with their data.
+                    Lala.API.Instance.CurrentUser.Library.Playing = Lala.API.Instance.CurrentUser.Library.Playlists[0];
+                    //dataGrid1.DataContext = UserLibrary.Playing.Songs;
+                    LoadDataGrid();
+                    LoadPlaylists();
         }
 
+        private delegate void DataGridLoader();
+        private void LoadDataGrid()
+        {
+            if (this.dataGrid1.Dispatcher.CheckAccess())
+            {
+                dataGrid1.ItemsSource = Lala.API.Instance.CurrentUser.Library.Playing.Songs;
+            }
+            else
+            {
+                this.dataGrid1.Dispatcher.Invoke(DispatcherPriority.Normal, new DataGridLoader(LoadDataGrid));
+            }
+        }
+
+        private delegate void PlaylistLoader();
+        private void LoadPlaylists()
+        {
+            if (this.dataGrid1.Dispatcher.CheckAccess())
+            {
+                playList.PlaylistsContainer.ItemsSource = Lala.API.Instance.CurrentUser.Library.Playlists;
+            }
+            else
+            {
+                this.dataGrid1.Dispatcher.Invoke(DispatcherPriority.Normal, new DataGridLoader(LoadPlaylists));
+            }
+        }
         private void UnloadLibrary()
         {
             Lala.API.Instance.CurrentUser = null;
