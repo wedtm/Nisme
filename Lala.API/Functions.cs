@@ -98,7 +98,7 @@ namespace Lala.API
                 IDictionaryEnumerator en = pls.GetEnumerator();
                 while (en.MoveNext())
                 {
-                    string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=" + en.Key.ToString() + "&includeHistos=false&count=50&skip=0&sortKey=Offset&sortDir=Asc&webSrc=nisme&xml=true";
+                    string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=" + en.Key.ToString() + "&includeHistos=false&count=1000&skip=0&sortKey=Offset&sortDir=Asc&webSrc=nisme";
                     Lala.API.Instance.CurrentUser.Library.Playlists.Add(new Playlist(URL, en.Value.ToString(), en.Key.ToString()));
                 }
                 Lala.API.Instance.CurrentUser.Queue = new List<Song>();

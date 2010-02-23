@@ -37,7 +37,7 @@ namespace Lala.API
         }
         public static string GetLibrary(ulong Number, long Offset)
         {
-            string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=songs&includeHistos=false&count=" + Number.ToString() + "&skip=" + Offset.ToString() + "&sortKey=Artist&sortDir=Asc&webSrc=nisme&xml=true";
+            string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=songs&includeHistos=false&count=" + Number.ToString() + "&skip=" + Offset.ToString() + "&sortKey=Artist&sortDir=Asc&webSrc=nisme";
             return URL;
         }
         public static bool GetLoginCookie(string username, string password)

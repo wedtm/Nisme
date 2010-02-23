@@ -97,6 +97,7 @@
     <Compile Include="Data Objects\User.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="HTTPRequests.cs" />
+    <Compile Include="JSONParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data Objects\Song.cs" />
     <Compile Include="XmlParser.cs" />

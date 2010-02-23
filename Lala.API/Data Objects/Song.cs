@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Drawing;
+using Newtonsoft.Json.Linq;
 
 namespace Lala.API
 {
@@ -12,47 +13,21 @@ namespace Lala.API
     {
         #region Public Members
         public String Genre { get; set; }
-        public Boolean IsDownloadAlbumOnly { get; set; }
-        public Boolean IsLicensedForDownload { get; set; }
         public Int64 LinkDiscLalaId { get; set; } // can this be safely set to UInt64?
-        public Boolean IsForecast { get; set; }
-        public Boolean IsMissingFile { get; set; }
-        public Boolean IsUploaded { get; set; }
-        public Boolean IsDownloadPurchased { get; set; }
-        public String PlayType { get; set; } // Check for enum's
-        public UInt16 Listens { get; set; }
+        public UInt64 Listens { get; set; }
         public Int64 SongLalaId { get; set; }
         public String Timestamp { get; set; }
-        public String SyncUrl { get; set; }
-        public Int64 Disc { get; set; }
         public Int64 ID { get; set; }
-        public Int16 AddPrice { get; set; }
         public String Title { get; set; }
-        public UInt16 ListensRank { get; set; }
         public Int64 DiscLalaId { get; set; }
         public String DiscTitle { get; set; }
-        public UInt16 Year { get; set; }
+        public UInt32 Year { get; set; }
         public String Artist { get; set; }
         public String ArtistList { get; set; } // set modifers for get and set on this one format will be one::two::three (?)
-        public UInt32 Listens7Rank { get; set; }
-        public Boolean IsDigied { get; set; }
-        public Int64 ListensTrend { get; set; } // WTF is this for?
-        public Boolean IsLicensedForStreaming { get; set; }
-        public DateTime LastListenTime { get; set; }
-        public UInt16 DownloadPriceInCents { get; set; }
-        public UInt16 TrackNumber { get; set; }
-        public UInt32 Listens7 { get; set; }
-        public Boolean IsQuasiUploaded { get; set; }
-        public String DownloadQuality { get; set; }
-        public Int64 GroupId { get; set; }
-        public Int32 Duration { get; set; }
+        public UInt32 TrackNumber { get; set; }
+        public UInt32 Duration { get; set; }
         public String PlayToken { get; set; }
         public UInt64 LinkSongLalaId { get; set; }
-        public String SyncToken { get; set; }
-        public Boolean IsFreeStreamingUpload { get; set; }
-        public String SyncType { get; set; }
-        public Boolean IsUserDownloadable { get; set; }
-        public Boolean CanUserPurchaseDownload { get; set; }
         public String AlbumImage
         {
             get
@@ -94,6 +69,28 @@ namespace Lala.API
             {
                 return API.Functions.SecondsToTime(Duration, true);
             }
+        }
+
+        public Song(JObject song)
+        {
+
+            this.Genre = (String)song["genre"];
+            this.LinkDiscLalaId = Convert.ToInt64((String)song["linkDiscLalaId"]);
+            this.Listens = Convert.ToUInt64(song["listens"].ToString());
+            this.SongLalaId = Convert.ToInt64((String)song["songLalaId"]);
+            this.Timestamp = (String)song["timestamp"];
+            this.ID = Convert.ToInt64((String)song["id"]);
+            this.Title = (String)song["title"];
+            this.DiscLalaId = Convert.ToInt64((String)song["discLalaId"]);
+            this.DiscTitle = (String)song["discTitle"];
+            if((String)song["year"] != String.Empty)
+                this.Year = Convert.ToUInt32((String)song["year"]);
+            this.Artist = (String)song["artist"];
+            this.ArtistList = (String)song["artistList"];
+            this.TrackNumber = Convert.ToUInt32((Int32)song["trackNumber"]);
+            this.Duration = Convert.ToUInt32((Int32)song["duration"]);
+            this.PlayToken = (String)song["playToken"];
+            this.LinkSongLalaId = Convert.ToUInt64((String)song["linkSongLalaId"]);
         }
         #endregion
     }

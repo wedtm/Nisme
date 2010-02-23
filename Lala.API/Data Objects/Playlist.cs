@@ -6,6 +6,7 @@ using System.Collections;
 using System.Xml.XPath;
 using System.Data;
 using Microsoft.Windows.Controls;
+using Newtonsoft.Json.Linq;
 
 namespace Lala.API
 {
@@ -21,42 +22,8 @@ namespace Lala.API
         public Song Playing { get; set; }
         public List<Histo> Histos { get; set; }
         public List<Song> Songs { get; set; }
-        public List<Album> Albums { get; set; }
-        public List<Artist> Artists { get; set; }
-        private void ConvertFrom(List<Object> item)
-        {
-            if (item[0].GetType() == typeof(Song))
-            {
-                List<Song> rList = new List<Song>();
-                foreach (Song obj in item)
-                    rList.Add(obj);
-                Songs = rList;
-            }
-
-            if (item[0].GetType() == typeof(Histo))
-            {
-                List<Histo> rList = new List<Histo>();
-                foreach (Histo obj in item)
-                    rList.Add(obj);
-                Histos = rList;
-            }
-
-            if (item[0].GetType() == typeof(Album))
-            {
-                List<Album> rList = new List<Album>();
-                foreach (Album obj in item)
-                    rList.Add(obj);
-                Albums = rList;
-            }
-
-            if (item[0].GetType() == typeof(Artist))
-            {
-                List<Artist> rList = new List<Artist>();
-                foreach (Artist obj in item)
-                    rList.Add(obj);
-                Artists = rList;
-            }
-        }
+        //public List<Album> Albums { get; set; }
+        //public List<Artist> Artists { get; set; }
         public Playlist(List<Song> Songs)
         {
             this.Songs = Songs;
@@ -67,13 +34,25 @@ namespace Lala.API
         }
         public Playlist(string URL, string Name, string ID)
         {
-            API.XmlParser parser = new API.XmlParser();
-            XPathNavigator nav = parser.XPathNavFromStream(URL);
-            List<Object> placeholder = parser.SingleNodeCollection(typeof(Song), XPathStatements.Playlists.Songs, nav);
-            ConvertFrom(placeholder);
+            //API.XmlParser parser = new API.XmlParser();
+            //XPathNavigator nav = parser.XPathNavFromStream(URL);
+            //List<Object> placeholder = parser.SingleNodeCollection(typeof(Song), XPathStatements.Playlists.Songs, nav);
+            //ConvertFrom(placeholder);
+            this.Histos = new List<Histo>();
+            this.Songs = new List<Song>();
+            API.JSONParser parser = new API.JSONParser();
+            string json = HTTPRequests.GetData(URL);
+            JObject o = JObject.Parse(json);
+            JArray pls = (JArray)o["data"]["tracks"]["list"];
+            Hashtable ht = new Hashtable();
+            foreach (JObject item in pls)
+            {
+                Songs.Add(new Song(item));
+            }
             this.Name = Name;
             this.ID = ID;
         }
+
         public Playlist() { }
         public Song CurrentSong { get; set; }
         public Boolean HasMoreSongs

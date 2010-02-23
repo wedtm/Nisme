@@ -66,7 +66,6 @@ namespace Nisme
                 LoadLibrary(false);
                 if (Lala.API.Functions.LibraryNeedsUpdate(Lala.API.Instance.CurrentUser.Library.TrackCount))
                 {
-
                     LoadLibrary(true);
                 }
            // }));

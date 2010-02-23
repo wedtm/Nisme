@@ -30,7 +30,7 @@ namespace Vimae
                     this.CurrentPosition = new Double();
                     this.TotalLength = new Double();
                     this.TotalLengthInSeconds = new Double();
-                    this.Song = new Lala.API.Song();
+                    //TODO: REMOVE ON NEXT BUILD: this.Song = new Lala.API.Song();
                 }
             }
         }
