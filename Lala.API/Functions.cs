@@ -86,6 +86,7 @@ namespace Lala.API
                 BinaryFormatter bf = new BinaryFormatter();
                 Lala.API.Instance.CurrentUser = (API.User)bf.Deserialize(fs);
                 fs.Close();
+                Lala.API.Instance.CurrentUser.Queue = new List<Song>();
             }
             else
             {
@@ -100,6 +101,7 @@ namespace Lala.API
                     string URL = "http://www.lala.com/api/Playlists/getOwnSongs/" + API.Functions.CurrentLalaVersion() + "?playlistToken=" + en.Key.ToString() + "&includeHistos=false&count=50&skip=0&sortKey=Offset&sortDir=Asc&webSrc=nisme&xml=true";
                     Lala.API.Instance.CurrentUser.Library.Playlists.Add(new Playlist(URL, en.Value.ToString(), en.Key.ToString()));
                 }
+                Lala.API.Instance.CurrentUser.Queue = new List<Song>();
                 SaveLibrary();
             }
         }

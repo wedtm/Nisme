@@ -42,8 +42,10 @@ namespace Lala.API
         }
         public static bool GetLoginCookie(string username, string password)
         {
-            string URL = "https://www.lala.com/api/User/signin/" + API.Functions.CurrentLalaVersion() + "?email=" + username + "&userpwd=" + password + "&xml=true";
+            //string URL = "https://www.lala.com/api/User/signin/" + API.Functions.CurrentLalaVersion() + "?email=" + username + "&userpwd=" + password + "&xml=true";
+            string URL = "https://www.lala.com/signiniframe/?email=" + username + "&userpwd=" + password + "&xml=true";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+            request.Method = "POST";
             request.CookieContainer = new CookieContainer();
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             string plate = "uiFc=homeNoAuthBSignin; ";
@@ -57,13 +59,18 @@ namespace Lala.API
             reader.Close();
             dataStream.Close();
             response.Close();
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.LoadXml(responseFromServer);
-            XmlNodeList id = xDoc.GetElementsByTagName("userToken");
-            XmlNodeList err = xDoc.GetElementsByTagName("errorCode");
-            string UserID = id[0].InnerText;
-            string ErrorCode = err[0].InnerText;
-            if (ErrorCode != String.Empty)
+
+            // Lala has changed the way we login, so we'll have to get this data from somewhere else :(
+
+
+            //XmlDocument xDoc = new XmlDocument();
+            //xDoc.LoadXml(responseFromServer);
+            //XmlNodeList id = xDoc.GetElementsByTagName("userToken");
+            //XmlNodeList err = xDoc.GetElementsByTagName("errorCode");
+            //string UserID = id[0].InnerText;
+            //string ErrorCode = err[0].InnerText;
+
+            if (response.Cookies.Count == 0)
             {
                 return false;
             }
