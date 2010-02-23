@@ -58,11 +58,6 @@ namespace Vimae
                 Song.CurrentPositionInSeconds = Bass.BASS_ChannelBytes2Seconds(Channel, Bass.BASS_ChannelGetPosition(Channel));
                 Song.TotalLengthInSeconds = Bass.BASS_ChannelBytes2Seconds(Channel, Bass.BASS_ChannelGetLength(Channel));
             }
-            else
-            {
-                if (Lala.API.Instance.CurrentUser.Queue.Count > 0)
-                    Next();
-            }
         }
     }
 }
