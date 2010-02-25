@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Timers;
 using Un4seen.Bass.AddOn.Mix;
+using System.Threading;
 
 namespace Vimae
 {
@@ -18,7 +19,7 @@ namespace Vimae
             private static Stream _fs;
             private static long _fsLength;
             private static BASS_FILEPROCS _myStreamCreateUser;
-            private static Timer timer;
+            private static System.Timers.Timer timer;
             public Song NowPlaying = null;
 
 
@@ -48,11 +49,12 @@ namespace Vimae
 
             private void MyFileProcUserClose(IntPtr user)
             {
+                return;
                 if (_fs == null)
                     return;
                 _fs.Close();
                 Console.WriteLine("File Closed, starting Timer.");
-                timer = new Timer();
+                timer = new System.Timers.Timer();
                 timer.Interval = 500;
                 timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
                 timer.Start();

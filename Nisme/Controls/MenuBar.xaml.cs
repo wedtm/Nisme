@@ -60,5 +60,25 @@ namespace Nisme.Controls
         {
 
         }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            List<Lala.API.Song> newList = Lala.API.Instance.CurrentUser.Library.Playing.Songs.FindAll(LikeTrack);
+            parent.dataGrid1.ItemsSource = newList;
+        }
+
+        private bool LikeTrack(Lala.API.Song s)
+        {
+            if (s.Title.ToLower().Contains(SearchBox.Text.ToLower()) ||
+                s.Artist.ToLower().Contains(SearchBox.Text.ToLower())||
+                s.DiscTitle.ToLower().Contains(SearchBox.Text.ToLower()))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

@@ -18,23 +18,6 @@
         </Style>
     </Window.Resources>
         <DockPanel Height="Auto" Width="Auto">
-            <Grid DockPanel.Dock="Top" Margin="0,5,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="100" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.Children>
-                        <Menu Height="22" Name="menu1" Margin="0,0,0,5" DockPanel.Dock="Left" Width="Auto" Visibility="Visible">
-                            <MenuItem Header="File">
-                                <MenuItem Header="Exit" Background="Transparent" x:Name="ExitMenuItem" Click="ExitMenuItem_Click"></MenuItem>
-                            </MenuItem>
-                        </Menu>
-                        <TextBox Grid.Row="0" Margin="5,0,5,5" Grid.Column="1" x:Name="SearchBox" DockPanel.Dock="Right" TextChanged="SearchBox_TextChanged"></TextBox>
-                    </Grid.Children>
-                </Grid>
                 <Controls:NowPlayingBar DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="Auto" Height="110" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" x:Name="nowPlaying" Visibility="Collapsed"/>
             <Controls:MenuBar DockPanel.Dock="Top" HorizontalAlignment="Stretch" Width="Auto" x:Name="menuBar" />
         <Grid>

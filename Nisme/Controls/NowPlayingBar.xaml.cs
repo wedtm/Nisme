@@ -34,5 +34,6 @@ namespace Nisme.Controls
         {
             parent.PlayNextInQueue();
         }
+
     }
 }

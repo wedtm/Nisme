@@ -49,26 +49,24 @@ namespace Nisme
             player.Played += new EventHandler(player_Played);
             player.Stopped += new EventHandler(player_Stopped);
             player.QueueModified += new EventHandler(player_QueueModified);
-            menuBar.NickName.Text = Lala.API.Instance.CurrentUser.Username;
             Loading win = new Loading();
             win.ShowModeless(new ThreadStart(LoadLibrary));
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = new TimeSpan(1000); // This equals to 1 second, some tweaking may be necessary. //- WedTM
             progressTimer.Tick += new EventHandler(progressTimer_Tick);
             progressTimer.Start();
+            nowPlaying.Visibility = Visibility.Visible;
+            nowPlaying.MetaData.Visibility = Visibility.Hidden;
             this.Show();
         }
 
         void LoadLibrary()
         {
-           // this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
-           // {
                 LoadLibrary(false);
                 if (Lala.API.Functions.LibraryNeedsUpdate(Lala.API.Instance.CurrentUser.Library.TrackCount))
                 {
                     LoadLibrary(true);
                 }
-           // }));
         }
 
         void player_QueueModified(object sender, EventArgs e)
@@ -83,7 +81,7 @@ namespace Nisme
         {
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
-                nowPlaying.Visibility = Visibility.Collapsed;
+                nowPlaying.MetaData.Visibility = Visibility.Hidden;
             }));
         }
 
@@ -91,7 +89,7 @@ namespace Nisme
         {
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
-                nowPlaying.Visibility = Visibility.Visible;
+                nowPlaying.MetaData.Visibility = Visibility.Visible;
             }));
             progressTimer.Start();
         }
@@ -101,7 +99,7 @@ namespace Nisme
         {
             this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
-                nowPlaying.Visibility = Visibility.Visible;
+                nowPlaying.MetaData.Visibility = Visibility.Visible;
                 progressTimer.Start();
             }));
         }
@@ -115,6 +113,8 @@ namespace Nisme
                 {
                     this.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                     {
+                        int cpu = Convert.ToInt32(Bass.BASS_GetCPU() * 100);
+                        menuBar.CPU.Text = "CPU Usage: " + cpu.ToString() + "%";
                         player.Update();
                         double PercentOfTrack = player.Song.CurrentPositionInSeconds / player.Song.TotalLengthInSeconds;
                         double trackBarLength = nowPlaying.trackBarBg.ActualWidth;
@@ -194,20 +194,6 @@ namespace Nisme
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            List<Lala.API.Song> newList = Lala.API.Instance.CurrentUser.Library.Playing.Songs.FindAll(LikeTrack);
-            dataGrid1.ItemsSource = newList;
-        }
-
-        private bool LikeTrack(Song s)
-        {
-            if (s.Title.ToLower().Contains(SearchBox.Text.ToLower()) || s.Artist.ToLower().Contains(SearchBox.Text.ToLower()) || s.DiscTitle.ToLower().Contains(SearchBox.Text.ToLower()))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         private void dataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
